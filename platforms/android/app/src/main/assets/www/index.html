@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <script src="js/jquery-3.5.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <title>TO-DO</title>
+
+</head>
+
+<body class="container">
+    <div class="app">
+        <div class="container">
+            <div id="list_page" class="inactive_page">
+                <div class="dropdown">
+                    <button id="menubar" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Menu
+                        <span class="caret"></span>
+                    </button>
+                    <ul id="myDropdown" class="dropdown-menu">
+                        <li>
+                            <a href="#">Clear completed</a>
+                        </li>
+                        <li>
+                            <a href="#">Refresh</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class = "container">TO-DO LIST
+                        <div id="someId"></div>
+                        <label class="todo-list-item topcoat-checkbox__label">
+
+                                <input {{checked}} type="checkbox">
+                                <div class="topcoat-checkbox"></div>
+                        </label>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                    <input id="add_button" type="button" class="btn btn-info btn-md" style="width: 50%;" value="Add">
+                </div>
+            </div>
+        </div>
+
+        <div id="add_task" class="inactive_page">
+            <button id="go_back" type="button" class="btn btn-info btn-md" style="width: 50%;">Back</button>
+            <form id="new_task_form" class="form" action="" method="post">
+                <div class="form-group">
+                    <input type="text" class="topcoat-text-input" name="new_task" value="" placeholder="Add your task">
+                </div>
+                <div class="form-group" style="text-align: center;">
+                    <input type="button" id="save_btn" class="btn btn-info btn-md" style="width: 50%;" value="Save">
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+
+</html>
