@@ -22,3 +22,12 @@ form input {
 .inactive_page{
     display: none;
 }
+
+#add_button{
+    position: fixed;
+    bottom: 0px;
+    right: 0px; 
+}
+td{
+    width: 25%;
+}

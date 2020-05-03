@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
 
     <script src="js/jquery-3.5.0.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
     <title>TO-DO</title>
@@ -20,6 +21,12 @@
 <body class="container">
     <div class="app">
         <div class="container">
+            <div data-role="page" id="home">
+                <div data-role="header">
+                    <h1 style="text-align: center;">TO DO APP</h1>
+                </div>
+            </div>
+
             <div id="list_page" class="inactive_page">
                 <div class="dropdown">
                     <button id="menubar" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Menu
@@ -27,23 +34,19 @@
                     </button>
                     <ul id="myDropdown" class="dropdown-menu">
                         <li>
-                            <a href="#">Clear completed</a>
+                            <a href="#" id="camera_button">Camera</a>
                         </li>
                         <li>
-                            <a href="#">Refresh</a>
+                            <a href="#" id="location_button">Location</a>
+                        </li>
+                        <li>
+                            <a id="refresh">Refresh</a>
                         </li>
                     </ul>
                 </div>
-                <div class = "container">TO-DO LIST
-                        <div id="someId"></div>
-                        <label class="todo-list-item topcoat-checkbox__label">
-
-                                <input {{checked}} type="checkbox">
-                                <div class="topcoat-checkbox"></div>
-                        </label>
-                </div>
+                <div id="list"></div>
                 <div class="form-group" style="text-align: center;">
-                    <input id="add_button" type="button" class="btn btn-info btn-md" style="width: 50%;" value="Add">
+                    <input id="add_button" type="button" class="btn btn-info btn-md" value="Add">
                 </div>
             </div>
         </div>
@@ -52,13 +55,12 @@
             <button id="go_back" type="button" class="btn btn-info btn-md" style="width: 50%;">Back</button>
             <form id="new_task_form" class="form" action="" method="post">
                 <div class="form-group">
-                    <input type="text" class="topcoat-text-input" name="new_task" value="" placeholder="Add your task">
+                    <input type="text" id="new_task" class="topcoat-text-input" name="new_task" value="" placeholder="Add your task">
                 </div>
                 <div class="form-group" style="text-align: center;">
                     <input type="button" id="save_btn" class="btn btn-info btn-md" style="width: 50%;" value="Save">
                 </div>
             </form>
-
         </div>
 
     </div>

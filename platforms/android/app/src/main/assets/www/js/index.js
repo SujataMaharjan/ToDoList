@@ -1,67 +1,179 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 var app = {
     // Application Constructor
     initialize: function () {
         document.addEventListener('deviceready', this.devicereadyListener.bind(this), false);
-        document.addEventListener('pause', this.pauseListner.bind(this), false);
-        document.addEventListener('resume', this.resumeListner.bind(this), false);
+
+        var localStorage = window.localStorage;
 
         $("#menubar").click(this.menuBar);
         $("#add_button").click(this.addButton);
         $("#go_back").click(this.backListner);
-
-        var someDiv = document.getElementById('someId');
-someDiv.appendChild(checkbox);
+        $("#save_btn").click(this.newListListner);
+        $("#delete_completed").click(this.deleteListListner);
+        $("#refresh").click(this.refreshListner);
+        $("#delete").click(this.deleteListner);
+        // $("#cbo").click(this.comboListner);
+        $("#camera_button").click(this.cameraListner);
+        $("#location_button").click(this.locationListner);
     },
 
     // When the user clicks on the menu button
     menuBar: function () {
         document.getElementById($("#myDropdown")).classList.toggle('show');
     },
+    cameraListner: function (selection) {
+        console.log("cameraButton Working");
+        alert("Camera working");
+        navigator.camera.getPicture(cameraSuccess, cameraError, cameraOptions);
+
+
+        var srcType = Camera.PictureSourceType.CAMERA;
+        var options = setOptions(srcType);
+        var func = createNewFileEntry;
+
+        navigator.camera.getPicture(function cameraSuccess(imageUri) {
+
+            displayImage(imageUri);
+            // You may choose to copy the picture, save it somewhere, or upload.
+            func(imageUri);
+
+        }, function cameraError(error) {
+            console.debug("Unable to obtain picture: " + error, "app");
+
+        }, options);
+    },
+    locationListner: function () {
+        navigator.geolocation.getCurrentPosition(geolocationSuccess,
+            [geolocationError],
+            [geolocationOptions]);
+        var onSuccess = function (position) {
+            alert('Latitude: ' + position.coords.latitude + '\n' +
+                'Longitude: ' + position.coords.longitude + '\n');
+        };
+
+
+        // onError Callback receives a PositionError object
+        //
+        function onError(error) {
+            alert('code: ' + error.code + '\n' +
+                'message: ' + error.message + '\n');
+        }
+
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    },
+    deleteListListner: function (e) {
+        alert("Here");
+        var target = $(e.target);
+        if (target.is(":checked")) {
+            alert("No del");
+            document.getElementById("delete").disabled = false;
+            localStorage.setItem("cbo", 1);
+        } else {
+            alert("No del");
+            document.getElementById("delete").disabled = true;
+            localStorage.removeItem("cbo");
+        }
+        var list = $("#list").html();
+        localStorage.setItem("list", list);
+    },
 
     addButton: function () {
-
         // hide list 
         $('#list_page').addClass("inactive_page");
         // display new task adding
         $('#add_task').removeClass("inactive_page");
     },
 
+    newListListner: function () {
+
+        var userList = $('#new_task').val();
+        if (userList == "") {
+            alert("Sorry! You cannot save empty list");
+            return;
+        }
+        else {
+            // var userList = $('#new_tasks').val();
+            $('#new_task').val('');
+            var newitem = '<table class="table" border="1" border-collapse="collapse"> <tr> <td><input id="cbo" type="checkbox"  name="checkbox-name"/> ' + userList +
+                '<input type="button" value="Delete" id="delete" class="btn btn-info btn-md" style="float:right"/> </td></tr></table>';
+            $('#list').append(newitem);
+
+            var list = $("#list").html();
+            localStorage.setItem('list', list);
+            alert("Task Added!");
+            // hide new task window 
+            $('#add_task').addClass("inactive_page");
+            // display list
+            $('#list_page').removeClass("inactive_page");
+        }
+    },
+    deleteListner: function () {
+        alert("Delete Listner");
+        var parent = $(this).parent();
+        parent.remove();
+
+        var list = $("#list").html();
+        localStorage.setItem("list", list);
+        return false;
+    },
+    comboListner: function () {
+        alert("CBO start");
+
+        $('#cbo').val($(this).is(':checked'));
+        if (document.getElementById($('#cbo')).checked) {
+            alert("CBO check");
+            document.getElementById("delete").disabled = false;
+            //   $(this).attr('checked', 'checked');
+        } else {
+            document.getElementById("delete").disabled = true;
+            //   $(this).removeItem('checked');
+        }
+        // var list = $("#list").html();
+        // localStorage.setItem("list", list);
+    },
     devicereadyListener: function () {
+        // alert(navigator.geolocation);
+
+        // alert(navigator.camera);
+        // navigator.camera;
         $('#list_page').removeClass("inactive_page");
+        if (localStorage.getItem('list')) {
+            $('#list').html(localStorage.getItem('list'));
+        }
+        $('#delete').click(function() {
+            // var parent = $(this).parent();
+            alert("Delete button delete");
+            // parent.remove();
+            var parent = $(this).parent();
+    parent.remove();
+   
+    var list = $("#list").html();
+    localStorage.setItem("list", list);
+    return false;
+          });
+        $('#cbo').click(function (e) {
+            var target = $(e.target );
+           if (target.is(":checked")) {
+               localStorage.setItem("cbo", 1);
+           } else {
+                localStorage.removeItem("cbo");
+           }
+        });
+
     },
 
-    backListner: function () {
+    refreshListner: function () {
+        console.log("Refresh");
+        document.location.reload(true);
+    },
+
+    backListner: function (event) {
+        // e.preventDefault();
         // hide new task window 
         $('#add_task').addClass("inactive_page");
         // display list
         $('#list_page').removeClass("inactive_page");
     },
-
-    pauseListner: function () {
-        this.receivedEvent('pause');
-    },
-
-    resumeListner: function () {
-        this.receivedEvent('resume');
-    }
 };
 
 app.initialize();
