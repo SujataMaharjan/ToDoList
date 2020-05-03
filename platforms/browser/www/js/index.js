@@ -9,10 +9,7 @@ var app = {
         $("#add_button").click(this.addButton);
         $("#go_back").click(this.backListner);
         $("#save_btn").click(this.newListListner);
-        $("#delete_completed").click(this.deleteListListner);
         $("#refresh").click(this.refreshListner);
-        $("#delete").click(this.deleteListner);
-        // $("#cbo").click(this.comboListner);
         $("#camera_button").click(this.cameraListner);
         $("#location_button").click(this.locationListner);
     },
@@ -21,60 +18,42 @@ var app = {
     menuBar: function () {
         document.getElementById($("#myDropdown")).classList.toggle('show');
     },
+
+    //camera plugin function
     cameraListner: function (selection) {
         console.log("cameraButton Working");
-        alert("Camera working");
-        navigator.camera.getPicture(cameraSuccess, cameraError, cameraOptions);
+        navigator.camera.getPicture(onSuccess, onFail, {
+            quality: 50,
+            destinationType: Camera.DestinationType.DATA_URL
+        });
 
+        function onSuccess(imageData) {
+            var image = document.getElementById('myImage');
+            image.src = "data:image/jpeg;base64," + imageData;
+        }
 
-        var srcType = Camera.PictureSourceType.CAMERA;
-        var options = setOptions(srcType);
-        var func = createNewFileEntry;
-
-        navigator.camera.getPicture(function cameraSuccess(imageUri) {
-
-            displayImage(imageUri);
-            // You may choose to copy the picture, save it somewhere, or upload.
-            func(imageUri);
-
-        }, function cameraError(error) {
-            console.debug("Unable to obtain picture: " + error, "app");
-
-        }, options);
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
     },
-    locationListner: function () {
-        navigator.geolocation.getCurrentPosition(geolocationSuccess,
-            [geolocationError],
-            [geolocationOptions]);
-        var onSuccess = function (position) {
+
+    // geolocation plugin function
+    locationListner: function (selection) {
+        var options = {
+            enableHighAccuracy: true,
+            maximumAge: 3600000
+        }
+        var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+
+        function onSuccess(position) {
             alert('Latitude: ' + position.coords.latitude + '\n' +
                 'Longitude: ' + position.coords.longitude + '\n');
         };
 
-
-        // onError Callback receives a PositionError object
-        //
         function onError(error) {
-            alert('code: ' + error.code + '\n' +
-                'message: ' + error.message + '\n');
+            alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
         }
 
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    },
-    deleteListListner: function (e) {
-        alert("Here");
-        var target = $(e.target);
-        if (target.is(":checked")) {
-            alert("No del");
-            document.getElementById("delete").disabled = false;
-            localStorage.setItem("cbo", 1);
-        } else {
-            alert("No del");
-            document.getElementById("delete").disabled = true;
-            localStorage.removeItem("cbo");
-        }
-        var list = $("#list").html();
-        localStorage.setItem("list", list);
     },
 
     addButton: function () {
@@ -87,19 +66,22 @@ var app = {
     newListListner: function () {
 
         var userList = $('#new_task').val();
+        //if task field empty
         if (userList == "") {
             alert("Sorry! You cannot save empty list");
             return;
         }
         else {
-            // var userList = $('#new_tasks').val();
+            //clear text field
             $('#new_task').val('');
-            var newitem = '<table class="table" border="1" border-collapse="collapse"> <tr> <td><input id="cbo" type="checkbox"  name="checkbox-name"/> ' + userList +
-                '<input type="button" value="Delete" disabled="true" id="delete" class="btn btn-info btn-md" style="float:right"/> </td></tr></table>';
-            $('#list').append(newitem);
+            //create table to keep tasks
+            var newitem = '<table class="table" border="1" border-collapse="collapse"> <tr> <td><input id="cbo" type="checkbox"  name="chkbox"/> ' + userList +
+                '<input type="button" value="Delete" id="delete" class="btn btn-info btn-md" style="float:right"/> </td></tr></table>';
+            //storing the tasks
+            $('#task_list').append(newitem);
 
-            var list = $("#list").html();
-            localStorage.setItem('list', list);
+            var task_list = $("#task_list").html();
+            localStorage.setItem('task_list', task_list);
             alert("Task Added!");
             // hide new task window 
             $('#add_task').addClass("inactive_page");
@@ -107,71 +89,47 @@ var app = {
             $('#list_page').removeClass("inactive_page");
         }
     },
-    deleteListner: function () {
-        alert("Delete Listner");
-        var parent = $(this).parent();
-        parent.remove();
 
-        var list = $("#list").html();
-        localStorage.setItem("list", list);
-        return false;
-    },
-    comboListner: function () {
-        alert("CBO start");
-
-        $('#cbo').val($(this).is(':checked'));
-        if (document.getElementById($('#cbo')).checked) {
-            alert("CBO check");
-            document.getElementById("delete").disabled = false;
-            //   $(this).attr('checked', 'checked');
-        } else {
-            document.getElementById("delete").disabled = true;
-            //   $(this).removeItem('checked');
-        }
-        // var list = $("#list").html();
-        // localStorage.setItem("list", list);
-    },
     devicereadyListener: function () {
-        // alert(navigator.geolocation);
-
-        // alert(navigator.camera);
-        // navigator.camera;
         $('#list_page').removeClass("inactive_page");
-        if (localStorage.getItem('list')) {
-            $('#list').html(localStorage.getItem('list'));
-        }
-        $('#delete').click(function () {
-            // var parent = $(this).parent();
-            alert("Delete button clicked");
-            // parent.remove();
+
+        //loading data from localStorage
+        if (localStorage.getItem('task_list')) {
+            $('#task_list').html(localStorage.getItem('task_list'));
+        };
+
+        // $('#delete').click( function () {
+        //deleting tasks with delete id
+        $(document).on('click', '#delete', function () {
+            alert("You are deleting a completed task");
+            // selecting current task to delete
             var parent = $(this).parent();
             parent.remove();
 
-            var list = $("#list").html();
-        localStorage.setItem("list", list);
+            //storing only the remaining tasks
+            var task_list = $("#task_list").html();
+            localStorage.setItem("task_list", task_list);
         });
 
-        $('#cbo').click(function (e) {
-            var target = $(e.target);
-            if (target.is(":checked")) {
-                alert("check box button clicked");
-                document.getElementById("delete").disabled = false;
-                localStorage.setItem("cbo", 1);
-            } else {
-                document.getElementById("delete").disabled = true;
-                localStorage.removeItem("cbo");
-            }
-        });
-
-        $(document).on('change', "input[name='checkbox-name']", function (e) {
+        //checkbox on change function and crossing out tasks
+        $(document).on('change', "input[name='chkbox']", function (e) {
+            //checking if checkbox is checked or not
             if ($(this).prop('checked')) {
-              $(this).attr('checked', 'checked');
+                //alert("You are checking a completed task");
+                $(this).attr('checked', 'checked');
+                // document.getElementById("delete").disabled = false;
+
+                //crossing tasks when checkbox checked
+                $(this).parent().toggleClass('stroked');
+                // localStorage.setItem("cbo");
             } else {
-              $(this).removeAttr('checked');
+                // document.getElementById("delete").disabled = true;
+                $(this).removeAttr('checked');
+                // localStorage.removeItem("cbo");
             }
-            var list = $("#list").html();
-            localStorage.setItem("list", list);
-          });
+            var task_list = $("#task_list").html();
+            localStorage.setItem("task_list", task_list);
+        });
 
     },
 
@@ -181,7 +139,7 @@ var app = {
     },
 
     backListner: function (event) {
-        // e.preventDefault();
+        event.preventDefault();
         // hide new task window 
         $('#add_task').addClass("inactive_page");
         // display list

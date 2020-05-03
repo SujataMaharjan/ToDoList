@@ -1,8 +1,13 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #17a2b8;
     height: 100vh;
+    background:url("../img/vintage-concrete.png") fixed;    
+}
+
+h1{
+    text-decoration: underline;
+    text-decoration-color: whitesmoke;
 }
 
 form {
@@ -31,3 +36,21 @@ form input {
 td{
     width: 25%;
 }
+
+.stroked { 
+    text-decoration: line-through; 
+}
+
+#add_button{
+    margin: 10px;
+    font-size: 20px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+}
+#go_back{
+    border-radius: 50%;    
+}
+
+table{
+      background: #ffcc00;
+  }
